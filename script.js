@@ -26,6 +26,10 @@ let isSecond = false;
 
 // func for calling the two num
 function press(value) {
+    //condition to prevent multiple dots '.'
+    if (value === '.' && ((!isSecond && firstNum.includes('.'))||(isSecond && anotherNum.includes('.')))) {
+        return;
+    }
     if (!isSecond) {
         firstNum += value;
         calculatorDisplay.value = firstNum;        
@@ -34,14 +38,33 @@ function press(value) {
     else {
         anotherNum += value;
         calculatorDisplay.value = anotherNum;
+        
     }
+    
 }
 
 // when an operator is clicked
 function setOperator(op) {
+    
     if (firstNum === '') return;
+    if (operator && anotherNum !== ''){
+        // so to calculate whenever there two pairs 
+        operate();
+    }
+    
     operator = op;
     isSecond = true;
+}
+
+//for deleting a single digit
+function backspaceBtn() {
+    if (!isSecond) {
+        firstNum = firstNum.slice(0, -1);
+        calculatorDisplay.value = firstNum;    
+    } else {
+        anotherNum = anotherNum.slice(0, -1);
+        calculatorDisplay.value = anotherNum;
+    }
 }
 
 // for equals operations
@@ -49,6 +72,11 @@ function operate() {
     let num1 = parseFloat(firstNum);
     let num2 = parseFloat(anotherNum);
     let answer = 0;
+
+    if (firstNum === '' || operator === '' || anotherNum === '') {
+        calculatorDisplay.value = firstNum || '0';
+        return;
+    }
 
     if (operator === '+') {
         answer = addition(num1, num2);
@@ -63,7 +91,7 @@ function operate() {
         answer = division(num1, num2);        
     }
     
-    calculatorDisplay.value = (answer);
+    calculatorDisplay.value = Number.isInteger(answer)? answer : answer.toFixed(2);
 
     // resting for the next operations
 
